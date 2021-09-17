@@ -6,7 +6,6 @@ export PATH=$PATH:/kaniko/
 REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
 CONTEXT=${PLUGIN_CONTEXT:-$PWD}
 DOCKERFILE=${PLUGIN_DOCKERFILE:-Dockerfile}
-EXTRA_ARGS=${PLUGIN_EXTRA_ARGS}
 
 if [[ -n "${PLUGIN_TARGET:-}" ]]; then
     TARGET="--target=${PLUGIN_TARGET}"
@@ -61,5 +60,5 @@ set -x
 	--dockerfile ${DOCKERFILE} \
 	${BUILD_ARGS:-} \
 	${BUILD_ARGS_FROM_ENV:-}
-	${EXTRA_ARGS}
+	${PLUGIN_EXTRA_ARGS:-}
 	${FORMATTEDTAGLIST} \
