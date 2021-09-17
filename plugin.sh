@@ -45,6 +45,17 @@ if [[ "${PLUGIN_AUTO_TAG:-}" == "true" ]]; then
     fi
 fi
 
+if [ -n "${PLUGIN_TAGS:-}" ]; then
+    DESTINATIONS=$(echo "${PLUGIN_TAGS}" | tr ',' '\n' | while read tag; do echo
+"--destination=${REGISTRY}/${PLUGIN_REPO}:${tag} "; done)
+elif [ -f .tags ]; then
+    DESTINATIONS=$(cat .tags| tr ',' '\n' | while read tag; do echo
+"--destination=${REGISTRY}/${PLUGIN_REPO}:${tag} "; done)
+elif [ -n "${PLUGIN_REPO:-}" ]; then
+    DESTINATIONS="--destination=${REGISTRY}/${PLUGIN_REPO}:latest"
+else
+    DESTINATIONS="--no-push"
+fi
 
 # mkdir -p /kaniko/.docker
 # echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
@@ -61,4 +72,4 @@ set -x
 	${BUILD_ARGS:-} \
 	${BUILD_ARGS_FROM_ENV:-}
 	${PLUGIN_EXTRA_ARGS:-}
-	${FORMATTEDTAGLIST} \
+	${DESTINATIONS} \
